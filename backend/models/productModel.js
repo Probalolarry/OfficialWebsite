@@ -58,6 +58,9 @@ const productSchema = new mongoose.Schema(
     images: [String], // Drive links
 
     description: String,
+
+    /* storefront visibility — admin toggles which products show on the public site */
+    showInStorefront: { type: Boolean, default: false, index: true },
   },
   { timestamps: true }
 );

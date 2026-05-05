@@ -1,19 +1,29 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { FaStar, FaPlus, FaMinus } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { ShopContext } from "../context/ShopContext";
 
 const ProductDetails = ({ product, selectedSpecs, setSelectedSpecs }) => {
-  const [selectedImage, setSelectedImage] = useState(product?.image[0] || "");
+  const firstImage = Array.isArray(product?.image)
+    ? product.image[0]
+    : product?.image;
+  const [selectedImage, setSelectedImage] = useState(firstImage || "");
   const [quantity, setQuantity] = useState(1);
-  const unitsRemaining = Math.max(0, product.unitsLeft - quantity);
+  const unitsRemaining = Math.max(0, (product.unitsLeft ?? 0) - quantity);
   const { addToCart } = useContext(ShopContext);
 
-  const isLaptop = product.category === "PC" && product.subCategory === "Laptops";
+  const isLaptop =
+    product.category === "PC" && product.subCategory === "Laptops";
 
   const handleAddToCart = () => {
-    if (isLaptop && (!selectedSpecs.ram || !selectedSpecs.storage || !selectedSpecs.processor)) {
-      alert("Please select RAM, Storage, and Processor before adding to cart.");
+    if (
+      isLaptop &&
+      (!selectedSpecs?.ram ||
+        !selectedSpecs?.storage ||
+        !selectedSpecs?.processor)
+    ) {
+      toast.error("Please select RAM, Storage, and Processor before adding to cart.");
       return;
     }
 
@@ -24,6 +34,7 @@ const ProductDetails = ({ product, selectedSpecs, setSelectedSpecs }) => {
     };
 
     addToCart(productToAdd);
+    toast.success(`${product.name || product.productName} added to cart`);
   };
 
   return (

@@ -1,8 +1,9 @@
 import React, { useContext, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const OrderSummary = ({ mode = "shipping" }) => {
+const OrderSummary = ({ mode = "shipping", onPlaceOrder }) => {
   const { cartItems, currency } = useContext(ShopContext);
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState("");
@@ -15,24 +16,32 @@ const OrderSummary = ({ mode = "shipping" }) => {
 
   const deliveryFee = cartSubtotal > 0 ? 1000 : 0;
   const discountThreshold = 5000000;
-  const defaultDiscount = cartSubtotal >= discountThreshold ? cartSubtotal * 0.1 : 0;
-  const estimatedTotal = cartSubtotal + deliveryFee - (appliedDiscount || defaultDiscount);
+  const defaultDiscount =
+    cartSubtotal >= discountThreshold ? cartSubtotal * 0.1 : 0;
+  const estimatedTotal =
+    cartSubtotal + deliveryFee - (appliedDiscount || defaultDiscount);
 
   const handleApplyDiscount = () => {
     if (couponCode.toLowerCase() === "save10") {
       const discountValue = cartSubtotal * 0.1;
       setAppliedDiscount(discountValue);
+      toast.success("Coupon applied — 10% off");
     } else {
-      alert("Invalid coupon");
+      toast.error("Invalid coupon");
     }
   };
 
   const handleCheckout = () => {
+    if (cartItems.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
     navigate("/shipping");
   };
 
   const handlePlaceOrder = () => {
-    alert("Order Placed Successfully!");
+    if (typeof onPlaceOrder === "function") return onPlaceOrder();
+    toast.error("Place-order handler is not wired up on this page.");
   };
 
   return (
@@ -51,18 +60,27 @@ const OrderSummary = ({ mode = "shipping" }) => {
       {cartItems.length > 0 && (
         <div className="flex items-start gap-4 mb-4">
           <img
-            src={cartItems[0].image}
+            src={
+              Array.isArray(cartItems[0].image)
+                ? cartItems[0].image[0]
+                : cartItems[0].image
+            }
             alt="item"
             className="w-16 h-16 rounded object-cover"
           />
           <div className="flex-1">
-            <p className="text-xs font-semibold text-gray-800">{cartItems[0].name}</p>
-            <p className="text-[11px] text-gray-500">{cartItems[0].description}</p>
+            <p className="text-xs font-semibold text-gray-800">
+              {cartItems[0].name}
+            </p>
+            <p className="text-[11px] text-gray-500">
+              {cartItems[0].description}
+            </p>
             <p className="text-xs mt-1">
               <span className="font-medium">QTY:</span> {cartItems[0].quantity}
             </p>
             <p className="text-sm font-medium mt-1">
-              {currency} {(cartItems[0].price * cartItems[0].quantity).toLocaleString()}
+              {currency}{" "}
+              {(cartItems[0].price * cartItems[0].quantity).toLocaleString()}
             </p>
           </div>
         </div>

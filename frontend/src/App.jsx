@@ -49,6 +49,10 @@ import InvManOrderDetails from "./components/InventoryManager/InvManOrderDetails
 import InvManViewOrder from "./components/InventoryManager/InvManViewOrder";
 import BulkAddProduct from "./pages/Inventory/BulkAddProduct";
 import StockManagementView from "./components/StockManager/StockManagementView";
+import BlogList from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
+import BlogAdminList from "./pages/Inventory/BlogAdminList";
+import BlogEditor from "./pages/Inventory/BlogEditor";
 
 export default function App() {
   return (
@@ -72,6 +76,8 @@ export default function App() {
           <Route path="signup" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="blog" element={<BlogList />} />
+          <Route path="blog/:slug" element={<BlogDetail />} />
         </Route>
 
         {/* ─ Logged-in users ─ */}
@@ -120,6 +126,9 @@ export default function App() {
               element={<EditProduct />}
             />
             <Route path="inventory/bulk-product" element={<BulkAddProduct />} />
+            <Route path="inventory/blogs" element={<BlogAdminList />} />
+            <Route path="inventory/blogs/new" element={<BlogEditor />} />
+            <Route path="inventory/blogs/:id" element={<BlogEditor />} />
           </Route>
         </Route>
 

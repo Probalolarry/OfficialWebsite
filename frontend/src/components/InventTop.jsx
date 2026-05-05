@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { Link } from "react-router-dom";
 import { FiDownload, FiBox } from "react-icons/fi";
+import { toast } from "react-toastify";
 import api from "../api";
 
 const InventTop = () => {

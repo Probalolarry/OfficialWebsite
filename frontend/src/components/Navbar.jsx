@@ -45,15 +45,14 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden lg:flex gap-6 text-sm font-medium text-gray-800">
-          <NavLink to="/bestsellers">Best Sellers</NavLink>
-          <NavLink to="/new">New Arrivals</NavLink>
-          <NavLink to="/affiliates">Affiliates</NavLink>
-          <NavLink to="/track">Track Order</NavLink>
+          <NavLink to="/collection">Shop</NavLink>
+          <NavLink to="/blog">Blog</NavLink>
+          <NavLink to="/orders">My Orders</NavLink>
 
           {/* show only when auth finished and role allowed */}
           {!loading && allowInventory && (
-    <NavLink to="/inventory">Inventory</NavLink>
-  )}
+            <NavLink to="/inventory">Inventory</NavLink>
+          )}
         </nav>
 
         <div className="hidden md:flex flex-1 max-w-md">
@@ -146,30 +145,20 @@ export default function Navbar() {
           <img src={assets.close_icon} alt="" />
         </button>
         <nav className="flex flex-col gap-4 text-gray-700">
-          <NavLink to="/bestsellers" onClick={() => setDrawer(false)}>
-            Best Sellers
+          <NavLink to="/collection" onClick={() => setDrawer(false)}>
+            Shop
           </NavLink>
-          <NavLink to="/new" onClick={() => setDrawer(false)}>
-            New Arrivals
+          <NavLink to="/blog" onClick={() => setDrawer(false)}>
+            Blog
           </NavLink>
-          <NavLink to="/affiliates" onClick={() => setDrawer(false)}>
-            Affiliates
+          <NavLink to="/orders" onClick={() => setDrawer(false)}>
+            My Orders
           </NavLink>
-          <NavLink to="/track" onClick={() => setDrawer(false)}>
-            Track Order
-          </NavLink>
-          {!loading &&
-            ["Admin", "Manager", "SalesRep"].includes(user?.userType) && (
-              <NavLink to="/inventory" onClick={() => setDrawer(false)}>
-                Inventory
-              </NavLink>
-            )}
-
-{!loading && allowInventory && (
-    <NavLink to="/inventory" onClick={() => setDrawer(false)}>
-      Inventory
-    </NavLink>
-  )}
+          {!loading && allowInventory && (
+            <NavLink to="/inventory" onClick={() => setDrawer(false)}>
+              Inventory
+            </NavLink>
+          )}
         </nav>
       </aside>
 

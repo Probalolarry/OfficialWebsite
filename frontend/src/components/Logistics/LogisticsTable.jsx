@@ -40,7 +40,7 @@ const digits = (s = "") => String(s).replace(/\D+/g, "");
 
 /* ───────────────── component ───────────────── */
 export default function LogisticsTable() {
-  const { currentUser, loading: authLoading } = useAuth();
+  const { user: currentUser, loading: authLoading } = useAuth();
   const [user, setUser] = useState(currentUser);
   const [orders, setOrders] = useState([]);
   const [tab, setTab] = useState("ready");

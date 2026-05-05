@@ -46,8 +46,8 @@ export default function SettingProfile() {
       lastName : form.lastName.trim(),
       email    : form.email.trim(),
       jobTitle : form.jobTitle.trim(),
-      userType : form.userType,
     };
+    if (me?.userType === 'Admin') payload.userType = form.userType;
     try {
       const updated = await saveProfile(payload);
       setMe(updated);
@@ -93,13 +93,15 @@ export default function SettingProfile() {
           <Input label="Email"      type="email" value={form.email} onChange={change('email')} />
           <Input label="Job description" value={form.jobTitle} onChange={change('jobTitle')} />
 
-            {/* User Type dropdown */}
-            <Select
-            label="User Type"
-            value={form.userType}
-            onChange={change('userType')}
-            options={["Admin", "Manager", "SalesRep", "Customer"]}
-          />
+            {/* User Type dropdown — admin-only */}
+            {me?.userType === 'Admin' && (
+              <Select
+                label="User Type"
+                value={form.userType}
+                onChange={change('userType')}
+                options={["Admin", "Manager", "SalesRep", "Customer", "Inventory", "Logistics"]}
+              />
+            )}
         </div>
 
         <button

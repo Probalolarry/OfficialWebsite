@@ -14,7 +14,7 @@ import {
   getGroupedStock,
   transferProducts
 } from "../controllers/productController.js";
-import { protect, allowRoles,protectSoft } from "../middleware/authMiddleware.js";
+import { protect, allowRoles, protectSoft, isInventory } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -34,8 +34,8 @@ router.post("/transfer", protect, allowRoles("Admin"), transferProducts);
 router
   .route("/:id")
   .get(getProduct) //  ← SINGLE
-  .put(protect, upload.array("images", 10), updateProduct)
-  .delete(protect, deleteProduct);
+  .put(protect, isInventory, upload.array("images", 10), updateProduct)
+  .delete(protect, isInventory, deleteProduct);
 
 router.get("/:id/base-specs", protect, getBaseSpecs);
 

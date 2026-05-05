@@ -1,11 +1,12 @@
 // frontend/src/pages/ResetPassword.jsx
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../api";
 
 export default function ResetPassword() {
   const { token } = useParams();
+  const navigate = useNavigate();
   const [pw1, setPw1] = useState("");
   const [pw2, setPw2] = useState("");
   const [loading, setLoading] = useState(false);
@@ -13,6 +14,9 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (pw1 !== pw2) return toast.error("Passwords do not match");
+    if (!/^(?=.*\d).{6,}$/.test(pw1)) {
+      return toast.error("Password must be ≥ 6 chars and contain a digit");
+    }
 
     try {
       setLoading(true);
@@ -22,6 +26,7 @@ export default function ResetPassword() {
       toast.success("Password updated – you can now log in.");
       setPw1("");
       setPw2("");
+      setTimeout(() => navigate("/login", { replace: true }), 800);
     } catch (err) {
       toast.error(err.response?.data?.message || "Token invalid / expired");
     } finally {

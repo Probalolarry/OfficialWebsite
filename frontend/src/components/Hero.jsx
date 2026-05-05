@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 const Hero = () => {
@@ -20,9 +21,12 @@ const Hero = () => {
           on all items till <br />
           <span className="text-white">September 11</span>
         </h1>
-        <button className="mt-2 px-6 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition">
+        <Link
+          to="/collection"
+          className="inline-block mt-2 px-6 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+        >
           Shop now
-        </button>
+        </Link>
       </div>
     </div>
   );

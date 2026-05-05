@@ -8,6 +8,7 @@ import {
   FiArrowDown,
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import api from "../api";
 import dayjs from "dayjs";
 
@@ -366,7 +367,7 @@ export default function OrderTable() {
                                     )
                                   );
                                 } catch (err) {
-                                  alert(
+                                  toast.error(
                                     err.response?.data?.message || err.message
                                   );
                                 } finally {

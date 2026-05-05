@@ -14,6 +14,7 @@ import accessRoutes from "./routes/accessRoutes.js";
 import returnRoutes from "./routes/returnRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import locationRoutes from "./routes/locationRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
@@ -58,6 +59,7 @@ app.use("/api/access", accessRoutes);
 app.use("/api/returns", returnRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/locations", locationRoutes);
+app.use("/api/blogs", blogRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

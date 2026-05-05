@@ -100,6 +100,7 @@ export default function EditProduct() {
       existingImages: [],
       newImages: [],
       removedImages: [],
+      showInStorefront: false,
     },
   });
 
@@ -142,6 +143,7 @@ export default function EditProduct() {
           existingImages: data.images || [],
           newImages: [],
           removedImages: [],
+          showInStorefront: !!data.showInStorefront,
         });
 
         // Fetch all brands and categories (assuming from backend)
@@ -244,6 +246,7 @@ export default function EditProduct() {
       );
       const rl = toNumOrUndef(data.reorderLevel);
       appendIfPresent(fd, "reorderLevel", rl);
+      fd.append("showInStorefront", data.showInStorefront ? "true" : "false");
     }
 
     /* DESCRIPTION ------------------------------------------------------ */
@@ -638,6 +641,24 @@ export default function EditProduct() {
               }
             />
           </div>
+
+          <label className="mt-2 flex items-start gap-3 rounded border border-gray-200 bg-orange-50/40 p-3 text-sm cursor-pointer">
+            <input
+              type="checkbox"
+              {...register("showInStorefront")}
+              className="mt-0.5 accent-orange-500"
+              disabled={disAv}
+            />
+            <span>
+              <span className="font-medium text-gray-800">
+                Show on storefront
+              </span>
+              <span className="block text-xs text-gray-500">
+                When enabled, this product appears on the public site. Items
+                added in the last 24 hours also show in &quot;New Arrivals&quot;.
+              </span>
+            </span>
+          </label>
         </Block>
       )}
 

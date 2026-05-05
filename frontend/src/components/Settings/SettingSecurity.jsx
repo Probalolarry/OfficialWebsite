@@ -31,7 +31,7 @@ export default function SettingSecurity() {
         toast.error("New passwords don’t match");
         return;
       }
-      if (!/^(?=.*\\d).{6,}$/.test(form.next)) {
+      if (!/^(?=.*\d).{6,}$/.test(form.next)) {
         toast.error("Password must be ≥ 6 chars and contain a digit");
         return;
       }

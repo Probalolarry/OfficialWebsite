@@ -1,5 +1,7 @@
 // pages/Shipping.js
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import ShippingInfo from "../components/ShippingInfo";
 import EditShippingInfo from "../components/EditShippingInfo";
 import MyOrder from "../components/MyOrder";
@@ -7,6 +9,7 @@ import DeliveryInfo from "../components/DeliveryInfo";
 import Footer from "../components/Footer";
 
 const Shipping = () => {
+  const navigate = useNavigate();
   const [deliveryList, setDeliveryList] = useState([]);
   const [showShippingForm, setShowShippingForm] = useState(true);
   const [editIndex, setEditIndex] = useState(null);
@@ -43,10 +46,13 @@ const Shipping = () => {
 
   const handleNext = () => {
     if (deliveryList.length > 0) {
-      localStorage.setItem("deliveryInfo", JSON.stringify([deliveryList[selectedIndex]]));
-      window.location.href = "/place-order";
+      localStorage.setItem(
+        "deliveryInfo",
+        JSON.stringify([deliveryList[selectedIndex]])
+      );
+      navigate("/place-order");
     } else {
-      alert("Please select or add a delivery address.");
+      toast.error("Please select or add a delivery address.");
     }
   };
 

@@ -1,8 +1,9 @@
 import React, { useContext, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const MyOrder = ({ mode = "shipping", onPlaceOrder }) => {
+const MyOrder = ({ mode = "shipping", onPlaceOrder, submitting = false }) => {
   const { cartItems, currency } = useContext(ShopContext);
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState("");
@@ -23,8 +24,9 @@ const MyOrder = ({ mode = "shipping", onPlaceOrder }) => {
     if (couponCode.toLowerCase() === "save10") {
       const discountValue = cartSubtotal * 0.1;
       setAppliedDiscount(discountValue);
+      toast.success("Coupon applied — 10% off");
     } else {
-      alert("Invalid coupon");
+      toast.error("Invalid coupon");
     }
   };
 
@@ -44,7 +46,7 @@ const MyOrder = ({ mode = "shipping", onPlaceOrder }) => {
           {cartItems.map((item, idx) => (
             <div key={idx} className="flex items-start gap-4">
               <img
-                src={item.image}
+                src={Array.isArray(item.image) ? item.image[0] : item.image}
                 alt={item.name}
                 className="w-16 h-16 rounded object-cover"
               />
@@ -99,9 +101,10 @@ const MyOrder = ({ mode = "shipping", onPlaceOrder }) => {
 
           <button
             onClick={onPlaceOrder}
-            className="w-full mt-4 bg-[#524D9B] text-white font-medium py-2 rounded hover:bg-[#483dc2] transition duration-200"
+            disabled={submitting || cartItems.length === 0}
+            className="w-full mt-4 bg-[#524D9B] text-white font-medium py-2 rounded hover:bg-[#483dc2] transition duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Place Order
+            {submitting ? "Placing order…" : "Place Order"}
           </button>
         </>
       )}

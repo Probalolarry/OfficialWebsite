@@ -52,7 +52,7 @@ const compare = (a, b, key, dir) => {
 
 /* ───────────────────────── component ───────────────────────── */
 export default function InvManTable() {
-  const { currentUser, loading: authLoading } = useAuth();
+  const { user: currentUser, loading: authLoading } = useAuth();
   const [user, setUser] = useState(currentUser);
   const [orders, setOrders] = useState([]);
   const [tab, setTab] = useState("pending");

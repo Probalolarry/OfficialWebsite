@@ -72,6 +72,7 @@ export const createProduct = asyncHandler(async (req, res) => {
     stockLocation,
     productId,
     description,
+    showInStorefront,
   } = req.body;
 
   /* - images - */
@@ -110,6 +111,7 @@ export const createProduct = asyncHandler(async (req, res) => {
     variants,
     features,
     images: imageLinks,
+    showInStorefront: showInStorefront === true || showInStorefront === "true",
   });
 
   await AuditLog.create({
@@ -175,6 +177,13 @@ export const updateProduct = asyncHandler(async (req, res) => {
       // if undefined or NaN/blank -> ignore (keep existing value)
     }
   });
+
+  /* boolean flags */
+  if (req.body.hasOwnProperty("showInStorefront")) {
+    product.showInStorefront =
+      req.body.showInStorefront === true ||
+      req.body.showInStorefront === "true";
+  }
 
   /* arrays / objects */
   if (req.body.variants !== undefined)
@@ -392,6 +401,8 @@ export const getProducts = asyncHandler(async (req, res) => {
     limit = 50,
     inStockOnly,
     stockLocation,
+    showInStorefront,
+    withinHours,
   } = req.query;
 
   // Force location for SalesRep/Manager
@@ -425,11 +436,19 @@ export const getProducts = asyncHandler(async (req, res) => {
     };
   });
 
+  const hours = Number(withinHours);
+  const sinceFilter =
+    Number.isFinite(hours) && hours > 0
+      ? { createdAt: { $gte: new Date(Date.now() - hours * 60 * 60 * 1000) } }
+      : {};
+
   const q = {
     $and: [
       ...(tokenConditions.length ? tokenConditions : [{}]),
       category ? { productCategory: category } : {},
       inStockOnly ? { quantity: { $gt: 0 } } : {}, // ✅ keep this
+      showInStorefront === "true" ? { showInStorefront: true } : {},
+      sinceFilter,
       enforcedLocation
         ? { stockLocation: enforcedLocation } // ✅ force for Sales/Manager
         : stockLocation

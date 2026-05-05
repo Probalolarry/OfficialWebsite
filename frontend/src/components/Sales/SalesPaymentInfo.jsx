@@ -44,9 +44,6 @@ export default function SalesPaymentInfo({
     [amountTransferred, summary.total]
   );
 
-  const removeLine = (id) =>
-    setItems((prev) => prev.filter((x) => x.id !== id));
-
   // const handleDone = async () => {
   //   setLoading(true)
   //   try {
@@ -231,10 +228,6 @@ export default function SalesPaymentInfo({
                 <span className="text-gray-800 font-semibold">
                   ₦{lineTotal(it).toLocaleString()}
                 </span>
-                <FiTrash2
-                  className="text-gray-400 hover:text-gray-600 cursor-pointer"
-                  onClick={() => removeLine(it.id)}
-                />
               </div>
             </div>
           ))}

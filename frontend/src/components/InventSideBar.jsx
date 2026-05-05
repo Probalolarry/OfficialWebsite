@@ -14,6 +14,7 @@ import {
   FiX,
   FiSave,
   FiRepeat,
+  FiEdit3,
 } from "react-icons/fi";
 import { BsClipboard } from "react-icons/bs";
 import { assets } from "../assets/assets";
@@ -88,6 +89,12 @@ const NAV_LINKS = [
     label: "Customers",
     icon: <FiUsers />,
     perm: "order.view",
+  },
+  {
+    path: "/inventory/blogs",
+    label: "Blog Posts",
+    icon: <FiEdit3 />,
+    perm: null,
   },
   {
     path: "/settings",

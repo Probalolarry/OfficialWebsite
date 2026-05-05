@@ -110,8 +110,8 @@ router
   // PUT  /api/users/:id/permissions   (admin only)
   .put("/:id/permissions", protect, isAdmin, updateUserPermissions);
 
-router.get("/:id", getUserById);
-router.get("/:id/orders", getUserOrders);
+router.get("/:id", protect, isAdmin, getUserById);
+router.get("/:id/orders", protect, isAdmin, getUserOrders);
 
 router.put("/:id/role", protect, isAdmin, updateUserRole);
 router.post("/refresh-permissions", protect, refreshPermissions);

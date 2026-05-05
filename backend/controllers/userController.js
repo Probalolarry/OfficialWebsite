@@ -17,8 +17,6 @@ const strongPassword = (pwd = "") => /^(?=.*\d).{6,}$/.test(pwd);
 export const registerUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, whatAppNumber, email, password } = req.body;
 
-  console.log("[REQUEST BODY]", req.body); // 👈 debug line
-
   if (!strongPassword(password)) {
     res.status(400);
     throw new Error(
@@ -64,12 +62,12 @@ export const authUser = asyncHandler(async (req, res) => {
     $or: [{ email: identifier.toLowerCase() }, { whatAppNumber: identifier }],
   });
 
-  const perms = DEFAULT_PERMS_BY_TYPE[user.userType] ?? [];
-
   if (!user || !(await user.matchPassword(password))) {
     res.status(401);
     throw new Error("Invalid credentials");
   }
+
+  const perms = DEFAULT_PERMS_BY_TYPE[user.userType] ?? [];
 
   // const token = generateToken(user._id);
   const policy = await AccessPolicy.findOne({ userType: user.userType });
@@ -223,9 +221,16 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
     email: req.body.email?.toLowerCase() ?? user.email,
     profileImage: req.body.profileImage ?? user.profileImage,
     jobTitle: req.body.jobTitle ?? user.jobTitle,
-    userType: req.body.userType ?? user.userType, // ✅ allow change in dashboard
     location: req.body.location ?? user.location,
   });
+
+  if (req.body.userType !== undefined && req.body.userType !== user.userType) {
+    if (req.user.userType !== "Admin") {
+      res.status(403);
+      throw new Error("Only admins can change user type");
+    }
+    user.userType = req.body.userType;
+  }
 
   if (req.body.password) {
     if (!strongPassword(req.body.password)) {
@@ -289,10 +294,14 @@ export const getCustomers = asyncHandler(async (req, res) => {
 });
 
 export const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user) throw new Error("User not found");
+  const user = await User.findById(req.params.id).select(
+    "-password -resetPasswordToken -resetPasswordExpire"
+  );
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
   res.json(user);
-  // res.json(addPerms(user.toObject()));
 });
 
 export const getUserOrders = asyncHandler(async (req, res) => {
@@ -440,7 +449,7 @@ export const updateUserPermissions = asyncHandler(async (req, res) => {
   await user.save();
 
   // issue brand-new token that contains the updated perms / userType
-  const token = generateJwt(user._id, user.userType, user.permissions);
+  const token = generateToken(user._id, user.permissions);
 
   res.json({
     message: "Permissions updated",

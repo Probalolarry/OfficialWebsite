@@ -60,7 +60,7 @@ export default function AddProduct() {
   }
 
   /* ---------- duplicate-modal state ---------------------- */
-  // const [dupModalId, setDupModalId] = useState(null); // null ⇢ hidden
+  const [dupModalId, setDupModalId] = useState(null); // null ⇢ hidden
 
   /* ---- react-hook-form ------------------------------------- */
   const {
@@ -103,6 +103,7 @@ export default function AddProduct() {
       images: [],
       description: "",
       features: [{ key: "", value: "" }],
+      showInStorefront: false,
     },
   });
 
@@ -225,6 +226,7 @@ export default function AddProduct() {
         "productIdMode",
         "productId",
       ].forEach((k) => fd.append(k, data[k] ?? ""));
+      fd.append("showInStorefront", data.showInStorefront ? "true" : "false");
     }
 
     if (canEdit("description")) {
@@ -665,6 +667,25 @@ export default function AddProduct() {
                 className="input rounded-l-none"
               />
             </div>
+
+            <label className="mt-2 flex items-start gap-3 rounded border border-gray-200 bg-orange-50/40 p-3 text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                {...register("showInStorefront")}
+                className="mt-0.5 accent-orange-500"
+                disabled={disAv}
+              />
+              <span>
+                <span className="font-medium text-gray-800">
+                  Show on storefront
+                </span>
+                <span className="block text-xs text-gray-500">
+                  When enabled, this product appears on the public site. Items
+                  added in the last 24 hours also show in &quot;New
+                  Arrivals&quot;.
+                </span>
+              </span>
+            </label>
           </Block>
         )}
 
@@ -715,7 +736,7 @@ export default function AddProduct() {
       </form>
 
       {/* ========== DUPLICATE MODAL ========== */}
-      {/* {dupModalId && (
+      {dupModalId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="w-[90%] max-w-sm rounded-lg bg-white p-6 text-center space-y-6 shadow-lg">
             <h3 className="text-lg font-semibold text-gray-800">
@@ -740,7 +761,7 @@ export default function AddProduct() {
             </button>
           </div>
         </div>
-      )} */}
+      )}
     </>
   );
 }
