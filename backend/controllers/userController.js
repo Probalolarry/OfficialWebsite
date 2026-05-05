@@ -309,6 +309,51 @@ export const getUserOrders = asyncHandler(async (req, res) => {
   res.json(orders);
 });
 
+/* ─────────────  WISHLIST  ───────────── */
+export const getMyWishlist = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).populate({
+    path: "wishlist",
+    select:
+      "_id productName sellingPrice images brand productCategory description showInStorefront",
+  });
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  res.json(user.wishlist || []);
+});
+
+export const addToWishlist = asyncHandler(async (req, res) => {
+  const { productId } = req.body;
+  if (!productId) {
+    res.status(400);
+    throw new Error("productId required");
+  }
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  if (!user.wishlist.some((id) => String(id) === String(productId))) {
+    user.wishlist.push(productId);
+    await user.save();
+  }
+  res.json({ wishlist: user.wishlist });
+});
+
+export const removeFromWishlist = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  user.wishlist = user.wishlist.filter(
+    (id) => String(id) !== String(req.params.productId)
+  );
+  await user.save();
+  res.json({ wishlist: user.wishlist });
+});
+
 export const getPreferences = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).select("preferences");
   if (!user) {

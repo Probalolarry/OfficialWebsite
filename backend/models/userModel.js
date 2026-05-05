@@ -33,6 +33,12 @@ const userSchema = new mongoose.Schema(
         ref: "Order",
       },
     ],
+    wishlist: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
     preferences: {
       timeZone: { type: String, default: "Africa/Lagos" },
       autoTimeZone: { type: Boolean, default: false },

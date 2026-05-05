@@ -46,6 +46,8 @@ export default function UserTypePermissionManager({ userType, onBack }) {
 
   if (!policy) return <p className="p-4">Loading…</p>;
 
+  const isAdminRole = userType === "Admin";
+
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between">
@@ -55,16 +57,28 @@ export default function UserTypePermissionManager({ userType, onBack }) {
         </button>
       </div>
 
+      {isAdminRole && (
+        <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <strong>Admins always have full access.</strong> The permissions
+          below are stored for record-keeping, but Admin accounts bypass
+          permission checks on the server. You cannot lock yourself out by
+          editing this list.
+        </div>
+      )}
+
       <ul className="space-y-2">
         {ALL_PERMISSIONS.map((p) => (
           <li key={p.id} className="flex items-center gap-3">
             <input
               type="checkbox"
               className="h-4 w-4 text-orange-600"
-              checked={dirty.has(p.id)}
+              checked={isAdminRole ? true : dirty.has(p.id)}
+              disabled={isAdminRole}
               onChange={() => toggle(p.id)}
             />
-            <span>{p.label}</span>
+            <span className={isAdminRole ? "text-gray-500" : ""}>
+              {p.label}
+            </span>
           </li>
         ))}
       </ul>

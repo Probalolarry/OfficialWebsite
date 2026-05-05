@@ -58,10 +58,13 @@ export const canViewOrders = allowRoles(
 );
 export const canUpdateSale = allowRoles("Admin", "Manager", "SalesRep");
 
-/* permission gate – checks JWT-scoped permissions */
+/* permission gate – checks JWT-scoped permissions.
+   Admin always passes — they cannot be locked out by UAC misconfig. */
 export const authorize =
   (...requiredPerms) =>
   (req, res, next) => {
+    if (req.user?.userType === "Admin") return next();
+
     const perms = req.perms || [];
     const ok = requiredPerms.every((p) => perms.includes(p));
     if (!ok) {

@@ -16,7 +16,7 @@ import UserProfileView from "./UserProfileView";
 export default function Navbar() {
   const navigate = useNavigate();
   const { setFilters } = useSearch();
-  const { cartItems } = useContext(ShopContext);
+  const { cartItems, wishlistCount } = useContext(ShopContext);
   const { user, logout, loading } = useAuth();
 
   /* ----- UI ----- */
@@ -70,7 +70,14 @@ export default function Navbar() {
             <img src={assets.search_icon} alt="" className="w-5" />
           </button>
 
-          <img src={assets.heart_icon} alt="" className="w-5" />
+          <Link to="/wishlist" className="relative" aria-label="Wishlist">
+            <img src={assets.heart_icon} alt="" className="w-5" />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-2 -right-2 grid h-4 w-4 place-items-center rounded-full bg-orange-500 text-[10px] text-white">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
 
           <button onClick={() => setShowCart(true)} className="relative">
             <img src={assets.cart_icon} alt="" className="w-5" />

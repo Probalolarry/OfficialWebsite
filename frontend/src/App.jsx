@@ -53,6 +53,7 @@ import BlogList from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
 import BlogAdminList from "./pages/Inventory/BlogAdminList";
 import BlogEditor from "./pages/Inventory/BlogEditor";
+import Wishlist from "./pages/Wishlist";
 
 export default function App() {
   return (
@@ -78,6 +79,7 @@ export default function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="blog" element={<BlogList />} />
           <Route path="blog/:slug" element={<BlogDetail />} />
+          <Route path="wishlist" element={<Wishlist />} />
         </Route>
 
         {/* ─ Logged-in users ─ */}

@@ -1,8 +1,10 @@
-import { createContext, useState, useEffect, useMemo } from "react";
+import { createContext, useState, useEffect, useMemo, useCallback } from "react";
 import { products as placeholderProducts } from "../assets/assets";
 import api from "../api";
 
 export const ShopContext = createContext();
+
+const isLoggedIn = () => !!localStorage.getItem("algomian:token");
 
 const ShopContextProvider = ({ children }) => {
   const currency = "₦";
@@ -49,6 +51,12 @@ const ShopContextProvider = ({ children }) => {
         rating: p.rating ?? 4,
         bestseller: p.bestseller ?? false,
         createdAt: p.createdAt,
+        brand: p.brand ?? "",
+        processor: p.baseSpecs?.[0]?.baseCPU ?? p.processor ?? "",
+        ram: p.baseSpecs?.[0]?.baseRam ?? p.ram ?? "",
+        storage: p.baseSpecs?.[0]?.baseStorage ?? p.storage ?? "",
+        productCategory: p.productCategory ?? p.category ?? "",
+        graphicsCard: p.graphicsCard ?? "",
       })),
     [storefrontProducts]
   );
@@ -103,6 +111,70 @@ const ShopContextProvider = ({ children }) => {
 
   const clearCart = () => setCartItems([]);
 
+  /* ───────── wishlist ─────────
+     Stored as an array of product IDs.
+     - Always mirrored to localStorage (for guests).
+     - When logged in, fetched from + synced to /api/users/wishlist.        */
+  const [wishlist, setWishlist] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("algomian:wishlist") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("algomian:wishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
+
+  // Fetch from server when token is present (initial load + login event).
+  useEffect(() => {
+    const sync = async () => {
+      if (!isLoggedIn()) return;
+      try {
+        const { data } = await api.get("/api/users/wishlist");
+        const serverIds = Array.isArray(data) ? data.map((p) => p._id) : [];
+        setWishlist(serverIds);
+      } catch {
+        /* swallow — server may be down or token expired */
+      }
+    };
+    sync();
+    window.addEventListener("algomian-login", sync);
+    window.addEventListener("algomian-logout", () => setWishlist([]));
+    return () => {
+      window.removeEventListener("algomian-login", sync);
+    };
+  }, []);
+
+  const isInWishlist = useCallback(
+    (id) => wishlist.includes(id),
+    [wishlist]
+  );
+
+  const toggleWishlist = useCallback(
+    async (productId) => {
+      const has = wishlist.includes(productId);
+      setWishlist((prev) =>
+        has ? prev.filter((x) => x !== productId) : [...prev, productId]
+      );
+      if (isLoggedIn()) {
+        try {
+          if (has) {
+            await api.delete(`/api/users/wishlist/${productId}`);
+          } else {
+            await api.post("/api/users/wishlist", { productId });
+          }
+        } catch {
+          /* best-effort; local state already updated */
+        }
+      }
+    },
+    [wishlist]
+  );
+
+  const wishlistCount = wishlist.length;
+
   const value = {
     products,
     storefrontProducts: normalised,
@@ -118,6 +190,10 @@ const ShopContextProvider = ({ children }) => {
     getCartTotal,
     cartCount,
     clearCart,
+    wishlist,
+    wishlistCount,
+    isInWishlist,
+    toggleWishlist,
   };
 
   return (

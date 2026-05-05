@@ -1,15 +1,26 @@
 import React, { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { Link } from "react-router-dom";
-import { FaHeart, FaStar, FaRegStar } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaStar, FaRegStar } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const ProductItem = ({ id, image, name, price, description, rating }) => {
-  const { currency, addToCart } = useContext(ShopContext);
+  const { currency, addToCart, isInWishlist, toggleWishlist } =
+    useContext(ShopContext);
 
   const imageSrc =
     typeof image?.[0] === "string"
       ? image[0]
       : image?.[0]?.default || image?.[0];
+
+  const inWishlist = isInWishlist(id);
+
+  const handleHeart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(id);
+    toast.success(inWishlist ? "Removed from wishlist" : "Added to wishlist");
+  };
 
   return (
     <Link
@@ -21,9 +32,18 @@ const ProductItem = ({ id, image, name, price, description, rating }) => {
         <span className="absolute top-2 left-2 bg-white text-[10px] font-semibold text-gray-700 px-2 py-[2px] rounded shadow">
           NEW
         </span>
-        <span className="absolute top-2 right-2 bg-white p-1 rounded-full shadow cursor-pointer">
-          <FaHeart className="text-gray-400 text-xs" />
-        </span>
+        <button
+          type="button"
+          onClick={handleHeart}
+          aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+          className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow cursor-pointer hover:scale-110 transition"
+        >
+          {inWishlist ? (
+            <FaHeart className="text-orange-500 text-sm" />
+          ) : (
+            <FaRegHeart className="text-gray-400 text-sm" />
+          )}
+        </button>
         <img
           src={imageSrc || "/fallback.png"}
           alt={name}

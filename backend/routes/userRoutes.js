@@ -20,7 +20,9 @@ import {
   forgotPassword,
   resetPassword,
   refreshPermissions,
-  
+  getMyWishlist,
+  addToWishlist,
+  removeFromWishlist,
 } from "../controllers/userController.js";
 import {
   protect,
@@ -54,6 +56,11 @@ router
   .route("/preferences")
   .get(protect, getPreferences)
   .put(protect, updatePreferences);
+
+/* wishlist — must come before any /:id route so the literal path matches first */
+router.get("/wishlist", protect, getMyWishlist);
+router.post("/wishlist", protect, addToWishlist);
+router.delete("/wishlist/:productId", protect, removeFromWishlist);
 
 // Secure this endpoint (admin) and add search with ?q=
 router.get("/all", protect, isAdmin, getAllUsers);
