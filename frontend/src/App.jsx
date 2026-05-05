@@ -54,6 +54,7 @@ import BlogDetail from "./pages/BlogDetail";
 import BlogAdminList from "./pages/Inventory/BlogAdminList";
 import BlogEditor from "./pages/Inventory/BlogEditor";
 import Wishlist from "./pages/Wishlist";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -80,6 +81,7 @@ export default function App() {
           <Route path="blog" element={<BlogList />} />
           <Route path="blog/:slug" element={<BlogDetail />} />
           <Route path="wishlist" element={<Wishlist />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
 
         {/* ─ Logged-in users ─ */}
