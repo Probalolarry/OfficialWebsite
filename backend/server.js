@@ -28,6 +28,7 @@ const allowlist = [
   "http://localhost:5173",
   "https://algomian-web-app.vercel.app",
   "https://algomian-tech.vercel.app",
+  "https://official-website-gold-eight.vercel.app",
   "https://www.algomian.com",
   "https://algomian.com",
 ];

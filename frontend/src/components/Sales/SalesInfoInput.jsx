@@ -1,7 +1,7 @@
 /*  src/components/SalesInfoInput.jsx  */
 
 import { useState, useEffect, useMemo } from "react";
-import axios from "axios";
+import api from "../../api";
 import { FiSearch } from "react-icons/fi";
 import SelectedItemCard from "./SelectedItemCard";
 import { lineTotal } from "../../utils/money";
@@ -48,9 +48,7 @@ export default function SalesInfoInput({
     (async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get("/api/products?limit=500", {
-          withCredentials: true,
-        });
+        const { data } = await api.get("/api/products?limit=500");
         const list = Array.isArray(data)
           ? data
           : Array.isArray(data.products)
@@ -73,7 +71,7 @@ export default function SalesInfoInput({
     const t = setTimeout(async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get(
+        const { data } = await api.get(
           `/api/products?search=${encodeURIComponent(query)}&limit=50`
         );
         const list = Array.isArray(data)
