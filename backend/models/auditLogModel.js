@@ -8,6 +8,7 @@ const auditSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    
     action: {
       type: String,
       required: true,
